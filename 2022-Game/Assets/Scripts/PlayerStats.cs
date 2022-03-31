@@ -69,7 +69,7 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    public bool isAlive()
+    public bool IsAlive()
     {
         return this.health > 0;
     }
