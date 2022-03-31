@@ -5,36 +5,51 @@ public class EnemyMovement : MonoBehaviour
     Rigidbody2D rb;
     public enum MovementType {Random, Reflect, Follow, Orbit};
     public MovementType type;
-    public float moveSpeed = 20.0f;
-    public float horizontal = 50.0f;
-    public float vertical = 100.0f;
-    public float timeout = 10.0f;
+    public float moveSpeed;
+    public float timeout;
+    private float horizontal;
+    private float vertical;
+    private bool isTouching;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        type = MovementType.Random;
-        transform.position = new Vector2(horizontal, vertical);
-    }
+        isTouching = false;
+        horizontal = 0.0f;
+        vertical = 0.0f;
 
-    void Update()
-    { 
-        if(type == MovementType.Random)
+        rb = GetComponent<Rigidbody2D>();
+        transform.position = new Vector2(horizontal, vertical);
+
+        // Sets the initial movement states, changes movement every interval seconds. 
+        if (type == MovementType.Random)    // This works but collider is twitchy
         {
             InvokeRepeating("RandomMovement", 0.0f, timeout);
-        } 
-        else if(type == MovementType.Follow)
-        {
-            InvokeRepeating("FollowMovement", 0.0f, 0.0f);
         }
-        else if(type == MovementType.Orbit)
-        {
+    }
 
+    private void Update()
+    {
+        if(type != MovementType.Random)
+        {
+            CancelInvoke("RandomMovement");
         }
     }
 
     private void FixedUpdate()
     {
+        if(isTouching && type == MovementType.Random)
+        {
+            RandomMovement();
+        } 
+        else if (type == MovementType.Follow)   // Works Perfectly
+        {
+            FollowMovement();
+        } 
+        else if(type == MovementType.Orbit)
+        {
+            OrbitMovement();
+        }
+
         Vector2 movementDirection = new Vector2(horizontal, vertical);
 
         movementDirection.Normalize();
@@ -45,16 +60,22 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        isTouching = true;
         if(type == MovementType.Reflect)
         {
             ReflectMovement(collision);
-        }
+        } 
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        isTouching = false;
     }
 
     private void RandomMovement()
     {
-        horizontal = Random.Range(-1, 1);
-        vertical = Random.Range(-1, 1);
+        horizontal = Random.Range(-1.0f, 1.0f);
+        vertical = Random.Range(-1.0f, 1.0f);
     }
 
     private void ReflectMovement(Collision2D collision) 
@@ -71,8 +92,9 @@ public class EnemyMovement : MonoBehaviour
         vertical = player.position.y - vertical;
     }
 
-    private void Orbit()
+    private void OrbitMovement()
     {
 
     }
+
 }
