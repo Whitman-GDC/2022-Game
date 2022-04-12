@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ProjectileMovement : MonoBehaviour
+public class ProjectileBehavior : MonoBehaviour
 {
     Rigidbody2D rb;
 
@@ -10,7 +10,7 @@ public class ProjectileMovement : MonoBehaviour
     void Start() {
         rb = GetComponent<Rigidbody2D>();
     }
-
+    
     void FixedUpdate() {
         //Destroy projectile once offscreen
         if (transform.position.magnitude > 20) {
@@ -18,8 +18,15 @@ public class ProjectileMovement : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D other) {
-        Debug.Log("Projectile Collision with " + other.gameObject);
+    void OnTriggerEnter2D(Collider2D other) {
+        Debug.Log("Projectile Collision with " + other.gameObject); 
+        
+        // Destroy the projectile
         Destroy(gameObject);
+
+        // If it hit an enemy, damage the enemy
+        if(other.tag == "Enemy") {
+            other.gameObject.GetComponent<EnemyStatus>().TakeDamage(100);
+        }
     }
 }

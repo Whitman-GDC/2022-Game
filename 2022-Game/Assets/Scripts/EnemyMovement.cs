@@ -88,8 +88,8 @@ public class EnemyMovement : MonoBehaviour
     private void FollowMovement()
     {
         Transform player = GameObject.Find("Player").GetComponent<Transform>();
-        horizontal = player.position.x - horizontal;
-        vertical = player.position.y - vertical;
+        horizontal = player.position.x - transform.position.x;
+        vertical = player.position.y - transform.position.y;
     }
 
     private void OrbitMovement()

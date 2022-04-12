@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
         // Make new projectile and shoot it in target direction (towards mouse)
         Rigidbody2D projectile = Instantiate(projectilePrefab, transform.position, transform.rotation) as Rigidbody2D;
        
-        projectile.GetComponent<Rigidbody2D>().AddForce(direction * projectileSpeed);    
+        projectile.AddForce(direction * projectileSpeed);    
 
         
     }
